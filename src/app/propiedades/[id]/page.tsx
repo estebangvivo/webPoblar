@@ -19,6 +19,7 @@ const tagStyles = {
   "En Venta": "bg-brand text-white",
   Alquiler: "bg-navy text-white",
   Oportunidad: "bg-copper text-white",
+  "Venta y Alquiler": "bg-brand text-white",
 } as const;
 
 type PageProps = {
@@ -82,7 +83,11 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           <div className="flex flex-col">
             <p className="text-sm font-semibold tracking-wide text-brand uppercase">
               {property.type} ·{" "}
-              {property.operation === "venta" ? "Venta" : "Alquiler"}
+              {property.operation === "venta"
+                ? "Venta"
+                : property.operation === "alquiler"
+                  ? "Alquiler"
+                  : "Venta y Alquiler"}
             </p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-navy sm:text-4xl">
               {property.title}
@@ -97,14 +102,40 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </span>
             </p>
 
-            <p className="mt-6 text-3xl font-bold text-navy">
-              {formatPrice(property.price, property.currency)}
-              {property.operation === "alquiler" ? (
-                <span className="ml-2 text-base font-medium text-muted">
-                  /mes
-                </span>
-              ) : null}
-            </p>
+            <div className="mt-6 space-y-2">
+              {(property.operation === "venta" ||
+                property.operation === "ambos") && (
+                <p className="text-3xl font-bold text-navy">
+                  <span className="mr-2 text-sm font-semibold tracking-wide text-muted uppercase">
+                    Venta
+                  </span>
+                  {formatPrice(property.price, property.currency)}
+                </p>
+              )}
+              {(property.operation === "alquiler" ||
+                property.operation === "ambos") &&
+                property.rentPrice != null && (
+                  <p
+                    className={cn(
+                      "font-bold text-navy",
+                      property.operation === "ambos"
+                        ? "text-2xl"
+                        : "text-3xl"
+                    )}
+                  >
+                    <span className="mr-2 text-sm font-semibold tracking-wide text-muted uppercase">
+                      Alquiler
+                    </span>
+                    {formatPrice(
+                      property.rentPrice,
+                      property.rentCurrency ?? "ARS"
+                    )}
+                    <span className="ml-2 text-base font-medium text-muted">
+                      /mes
+                    </span>
+                  </p>
+                )}
+            </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {property.bedrooms > 0 && (

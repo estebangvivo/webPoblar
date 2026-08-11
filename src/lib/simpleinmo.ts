@@ -60,12 +60,14 @@ function mapType(type: string): PropertyType {
 }
 
 function mapOperation(operation: string): Property["operation"] {
-  return operation === "RENT" ? "alquiler" : "venta";
+  if (operation === "RENT") return "alquiler";
+  if (operation === "BOTH") return "ambos";
+  return "venta";
 }
 
 function mapTag(operation: string): PropertyTag {
   if (operation === "RENT") return "Alquiler";
-  if (operation === "BOTH") return "Oportunidad";
+  if (operation === "BOTH") return "Venta y Alquiler";
   return "En Venta";
 }
 
@@ -110,12 +112,22 @@ export function mapSimpleInmoProperty(raw: SimpleInmoProperty): Property {
   const images = normalizedImages.length ? normalizedImages : [cover];
 
   const isRent = raw.operationType === "RENT";
-  const displayPrice =
-    isRent && raw.rentPrice != null ? raw.rentPrice : raw.price;
-  const displayCurrency =
-    isRent && raw.rentCurrency
-      ? mapCurrency(raw.rentCurrency)
-      : mapCurrency(raw.currency);
+  const isBoth = raw.operationType === "BOTH";
+  const salePrice = raw.price;
+  const saleCurrency = mapCurrency(raw.currency);
+  const rentPrice =
+    raw.rentPrice != null
+      ? raw.rentPrice
+      : isRent
+        ? raw.price
+        : null;
+  const rentCurrency = raw.rentCurrency
+    ? mapCurrency(raw.rentCurrency)
+    : isRent
+      ? saleCurrency
+      : rentPrice != null
+        ? "ARS"
+        : null;
 
   return {
     id: raw.id,
@@ -127,8 +139,10 @@ export function mapSimpleInmoProperty(raw: SimpleInmoProperty): Property {
     type: mapType(raw.propertyType),
     operation: mapOperation(raw.operationType),
     tag: mapTag(raw.operationType),
-    price: displayPrice,
-    currency: displayCurrency,
+    price: isRent && !isBoth ? (rentPrice ?? salePrice) : salePrice,
+    currency: isRent && !isBoth ? (rentCurrency ?? saleCurrency) : saleCurrency,
+    rentPrice: isRent || isBoth ? rentPrice : null,
+    rentCurrency: isRent || isBoth ? rentCurrency : null,
     bedrooms: raw.rooms ?? 0,
     bathrooms: raw.bathrooms ?? 0,
     area: raw.areaM2 ?? 0,

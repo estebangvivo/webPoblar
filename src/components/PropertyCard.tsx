@@ -16,11 +16,17 @@ const tagStyles: Record<Property["tag"], string> = {
   "En Venta": "bg-brand text-white",
   Alquiler: "bg-navy text-white",
   Oportunidad: "bg-copper text-white",
+  "Venta y Alquiler": "bg-brand text-white",
 };
 
 export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
   const message = `Hola Poblar! Me interesa: ${property.title} (${property.address}, ${property.neighborhood}). ¿Me pueden dar más info?`;
   const detailHref = `/propiedades/${property.slug || property.id}`;
+  const showSale =
+    property.operation === "venta" || property.operation === "ambos";
+  const showRent =
+    (property.operation === "alquiler" || property.operation === "ambos") &&
+    property.rentPrice != null;
 
   return (
     <motion.article
@@ -48,14 +54,30 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
           >
             {property.tag}
           </span>
-          <span className="absolute right-3 bottom-3 rounded-lg bg-navy/90 px-3 py-1.5 text-sm font-bold text-white backdrop-blur-sm">
-            {formatPrice(property.price, property.currency)}
-            {property.operation === "alquiler" ? (
-              <span className="ml-1 text-xs font-medium text-slate-300">
-                /mes
+          <div className="absolute right-3 bottom-3 flex flex-col items-end gap-1.5">
+            {showSale ? (
+              <span className="rounded-lg bg-navy/90 px-3 py-1.5 text-sm font-bold text-white backdrop-blur-sm">
+                Venta {formatPrice(property.price, property.currency)}
               </span>
             ) : null}
-          </span>
+            {showRent ? (
+              <span className="rounded-lg bg-navy/90 px-3 py-1.5 text-sm font-bold text-white backdrop-blur-sm">
+                Alq.{" "}
+                {formatPrice(
+                  property.rentPrice!,
+                  property.rentCurrency ?? "ARS"
+                )}
+                <span className="ml-1 text-xs font-medium text-slate-300">
+                  /mes
+                </span>
+              </span>
+            ) : null}
+            {!showSale && !showRent ? (
+              <span className="rounded-lg bg-navy/90 px-3 py-1.5 text-sm font-bold text-white backdrop-blur-sm">
+                {formatPrice(property.price, property.currency)}
+              </span>
+            ) : null}
+          </div>
         </div>
       </Link>
 

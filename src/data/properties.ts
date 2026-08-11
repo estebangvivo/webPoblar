@@ -6,8 +6,8 @@ export type PropertyType =
   | "Comercial"
   | "Oficina"
   | "Otro";
-export type OperationType = "venta" | "alquiler";
-export type PropertyTag = "En Venta" | "Alquiler" | "Oportunidad";
+export type OperationType = "venta" | "alquiler" | "ambos";
+export type PropertyTag = "En Venta" | "Alquiler" | "Oportunidad" | "Venta y Alquiler";
 
 export interface Property {
   id: string;
@@ -21,6 +21,8 @@ export interface Property {
   tag: PropertyTag;
   price: number;
   currency: "ARS" | "USD";
+  rentPrice: number | null;
+  rentCurrency: "ARS" | "USD" | null;
   bedrooms: number;
   bathrooms: number;
   area: number;
@@ -59,6 +61,8 @@ export const mockProperties: Property[] = [
     tag: "En Venta",
     price: 185000,
     currency: "USD",
+    rentPrice: null,
+    rentCurrency: null,
     bedrooms: 3,
     bathrooms: 2,
     area: 220,
@@ -84,6 +88,8 @@ export const mockProperties: Property[] = [
     tag: "Alquiler",
     price: 280000,
     currency: "ARS",
+    rentPrice: null,
+    rentCurrency: null,
     bedrooms: 1,
     bathrooms: 1,
     area: 48,
@@ -109,6 +115,8 @@ export const mockProperties: Property[] = [
     tag: "Oportunidad",
     price: 42000,
     currency: "USD",
+    rentPrice: null,
+    rentCurrency: null,
     bedrooms: 0,
     bathrooms: 0,
     area: 360,
@@ -134,6 +142,8 @@ export const mockProperties: Property[] = [
     tag: "Alquiler",
     price: 650000,
     currency: "ARS",
+    rentPrice: null,
+    rentCurrency: null,
     bedrooms: 0,
     bathrooms: 1,
     area: 85,
@@ -159,6 +169,8 @@ export const mockProperties: Property[] = [
     tag: "En Venta",
     price: 245000,
     currency: "USD",
+    rentPrice: null,
+    rentCurrency: null,
     bedrooms: 4,
     bathrooms: 3,
     area: 280,
@@ -184,6 +196,8 @@ export const mockProperties: Property[] = [
     tag: "Oportunidad",
     price: 98000,
     currency: "USD",
+    rentPrice: null,
+    rentCurrency: null,
     bedrooms: 2,
     bathrooms: 1,
     area: 72,
