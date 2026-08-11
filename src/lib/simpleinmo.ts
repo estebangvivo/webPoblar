@@ -196,3 +196,69 @@ export async function getPropertyBySlug(
   if (!data?.property) return null;
   return mapSimpleInmoProperty(data.property);
 }
+
+export type VisitSlotDay = {
+  dateKey: string;
+  label: string;
+  slots: Array<{ startsAt: string; timeLabel: string }>;
+};
+
+export async function fetchVisitAvailability(propertySlug: string) {
+  const res = await fetch(
+    `${SIMPLEINMO_BASE_URL}/api/public/i/${SIMPLEINMO_ORG_SLUG}/propiedades/${encodeURIComponent(propertySlug)}/visitas`,
+    { cache: "no-store", headers: { Accept: "application/json" } }
+  );
+  if (!res.ok) return null;
+  return (await res.json()) as {
+    propertyId: string;
+    propertyTitle: string;
+    days: VisitSlotDay[];
+  };
+}
+
+export async function bookVisit(input: {
+  propertySlug: string;
+  startsAt: string;
+  name: string;
+  email: string;
+  phone?: string;
+}) {
+  const res = await fetch(
+    `${SIMPLEINMO_BASE_URL}/api/public/i/${SIMPLEINMO_ORG_SLUG}/propiedades/${encodeURIComponent(input.propertySlug)}/visitas`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        startsAt: input.startsAt,
+        name: input.name,
+        email: input.email,
+        phone: input.phone,
+      }),
+    }
+  );
+
+  const data = (await res.json().catch(() => null)) as
+    | { ok: true; message?: string }
+    | { error?: string }
+    | null;
+
+  if (!res.ok) {
+    return {
+      ok: false as const,
+      error: data && "error" in data && data.error
+        ? data.error
+        : "No se pudo reservar la visita.",
+    };
+  }
+
+  return {
+    ok: true as const,
+    message:
+      data && "message" in data && data.message
+        ? data.message
+        : "Visita reservada correctamente.",
+  };
+}

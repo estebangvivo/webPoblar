@@ -183,9 +183,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <ScheduleVisit
+                propertySlug={property.slug}
                 propertyTitle={property.title}
-                propertyAddress={property.address}
-                propertyNeighborhood={property.neighborhood}
               />
               <a
                 href={whatsappUrl(message, "ventas")}
