@@ -3,7 +3,7 @@ import type { Property } from "@/data/properties";
 
 interface FeaturedPropertiesProps {
   properties: Property[];
-  source: "simpleinmo" | "mock";
+  source: "simpleinmo" | "error";
 }
 
 export function FeaturedProperties({
@@ -30,7 +30,11 @@ export function FeaturedProperties({
             <p className="mt-2 text-xs font-medium text-brand">
               Sincronizado con SimpleInmo · Inmobiliaria Poblar
             </p>
-          ) : null}
+          ) : (
+            <p className="mt-2 text-xs font-medium text-red-600">
+              No pudimos sincronizar el catálogo en este momento.
+            </p>
+          )}
         </div>
 
         {featured.length === 0 ? (
@@ -39,16 +43,16 @@ export function FeaturedProperties({
               Todavía no hay propiedades publicadas
             </p>
             <p className="mt-2 text-sm text-muted">
-              Cuando publiques inmuebles en SimpleInmo, van a aparecer acá
+              Cargá y publicá inmuebles en SimpleInmo para que aparezcan acá
               automáticamente.
             </p>
             <a
-              href="https://simpleinmo.com.ar/i/inmobiliaria-poblar/propiedades"
+              href="https://simpleinmo.com.ar/gestion/propiedades"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
             >
-              Ver catálogo en SimpleInmo
+              Ir a SimpleInmo
             </a>
           </div>
         ) : (
