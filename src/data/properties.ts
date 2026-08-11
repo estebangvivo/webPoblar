@@ -199,47 +199,7 @@ export const mockProperties: Property[] = [
   },
 ];
 
-export const projects: Project[] = [
-  {
-    id: "p1",
-    name: "Torre Rivadavia",
-    location: "Centro, Villa María",
-    status: "En pozo",
-    progress: 25,
-    units: "24 departamentos",
-    image:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80",
-    description:
-      "Emprendimiento de pozo con unidades de 1, 2 y 3 ambientes. Financiación directa del desarrollador.",
-    priceFrom: "Desde USD 65.000",
-  },
-  {
-    id: "p2",
-    name: "Loteo Parque Sur",
-    location: "Banda Sur, Villa María",
-    status: "Entrega inmediata",
-    progress: 100,
-    units: "48 lotes",
-    image:
-      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80",
-    description:
-      "Loteo abierto con infraestructura completa: asfalto, agua, luz y cloacas. Ideal para construir.",
-    priceFrom: "Desde USD 28.000",
-  },
-  {
-    id: "p3",
-    name: "Residencias del Sol",
-    location: "Villa Nueva",
-    status: "En construcción",
-    progress: 60,
-    units: "16 duplex",
-    image:
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80",
-    description:
-      "Complejo de dúplex con amenities, jardines comunes y entrega estimada en 8 meses.",
-    priceFrom: "Desde USD 110.000",
-  },
-];
+export const projects: Project[] = [];
 
 export const neighborhoods = [
   "Almirante Brown",
