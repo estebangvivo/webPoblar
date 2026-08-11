@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, LogIn } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { WhatsAppChooser } from "@/components/WhatsAppChooser";
+import { SIMPLEINMO_LOGIN_URL } from "@/lib/simpleinmo";
 import { CONTACT, CONTACT_CHANNELS } from "@/lib/utils";
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -149,10 +150,19 @@ export function Footer() {
                 <FacebookIcon className="h-5 w-5" />
               </a>
             </div>
+            <a
+              href={SIMPLEINMO_LOGIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-brand hover:text-brand"
+            >
+              <LogIn className="h-4 w-4" />
+              Acceso inquilinos / propietarios
+            </a>
             <button
               type="button"
               onClick={() => setWhatsappOpen(true)}
-              className="mt-5 inline-flex rounded-lg bg-whatsapp px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
+              className="mt-3 inline-flex rounded-lg bg-whatsapp px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
             >
               Escribinos por WhatsApp
             </button>

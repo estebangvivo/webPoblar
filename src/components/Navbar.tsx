@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, MessageCircle, X } from "lucide-react";
+import { LogIn, Menu, MessageCircle, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { SIMPLEINMO_LOGIN_URL } from "@/lib/simpleinmo";
 import { cn, whatsappUrl } from "@/lib/utils";
 
 const links = [
@@ -54,7 +55,16 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <a
+            href={SIMPLEINMO_LOGIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden items-center gap-2 rounded-lg border border-white/25 px-3 py-2.5 text-sm font-semibold text-white transition hover:border-brand hover:bg-brand/10 hover:text-brand sm:inline-flex"
+          >
+            <LogIn className="h-4 w-4" />
+            Acceso clientes
+          </a>
           <a
             href={whatsappUrl(
               "Hola Poblar! Quiero publicar / consultar por mi inmueble.",
@@ -62,7 +72,7 @@ export function Navbar() {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-deep sm:inline-flex"
+            className="hidden items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-deep md:inline-flex"
           >
             <MessageCircle className="h-4 w-4" />
             Publicá tu Inmueble
@@ -92,6 +102,16 @@ export function Navbar() {
                 {link.label}
               </a>
             ))}
+            <a
+              href={SIMPLEINMO_LOGIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg border border-white/25 px-4 py-3 text-sm font-semibold text-white"
+            >
+              <LogIn className="h-4 w-4" />
+              Acceso clientes
+            </a>
             <a
               href={whatsappUrl(
                 "Hola Poblar! Quiero publicar / consultar por mi inmueble.",

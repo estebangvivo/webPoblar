@@ -10,6 +10,8 @@ export const SIMPLEINMO_BASE_URL =
 export const SIMPLEINMO_ORG_SLUG =
   process.env.SIMPLEINMO_ORG_SLUG || "inmobiliaria-poblar";
 
+export const SIMPLEINMO_LOGIN_URL = `${SIMPLEINMO_BASE_URL}/login`;
+
 type SimpleInmoProperty = {
   id: string;
   slug: string;
