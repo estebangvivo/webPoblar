@@ -25,7 +25,8 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata({
   params,

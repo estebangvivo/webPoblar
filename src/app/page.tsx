@@ -5,7 +5,8 @@ import { ValuationForm } from "@/components/ValuationForm";
 import { About } from "@/components/About";
 import { getCatalogProperties } from "@/lib/simpleinmo";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function Home() {
   const { properties, source } = await getCatalogProperties();
