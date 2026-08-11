@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand Poblar — naranja oficial + charcoal del material de marca */
+  --navy: #1a1818;
+  --navy-soft: #2c2622;
+  --brand: #f5811f;
+  --brand-deep: #d96a0c;
+  --copper: #a07048;
+  --surface: #f8fafc;
+  --white: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --whatsapp: #25d366;
+}
+
+@theme inline {
+  --color-navy: var(--navy);
+  --color-navy-soft: var(--navy-soft);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-copper: var(--copper);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-whatsapp: var(--whatsapp);
+  --font-sans: var(--font-jakarta);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--brand) 35%, white);
+}
+
+@keyframes float-pulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 14px 32px rgba(37, 211, 102, 0.5);
+  }
+}
+
+.whatsapp-float {
+  animation: float-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s ease-out both;
+}
