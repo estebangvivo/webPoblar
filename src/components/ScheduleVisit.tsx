@@ -109,7 +109,7 @@ export function ScheduleVisit({
       startsAt,
       name: String(data.get("name") || ""),
       email: String(data.get("email") || ""),
-      phone: String(data.get("phone") || "") || undefined,
+      phone: String(data.get("phone") || ""),
     });
 
     setSubmitting(false);
@@ -127,7 +127,10 @@ export function ScheduleVisit({
       return;
     }
 
-    setSuccessMessage(result.message);
+    setSuccessMessage(
+      result.message ||
+        "Visita agendada correctamente. La inmobiliaria se estará contactando por teléfono para confirmar la visita."
+    );
   }
 
   return (
@@ -195,8 +198,12 @@ export function ScheduleVisit({
               {successMessage ? (
                 <div className="space-y-4 p-5">
                   <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
-                    <p className="font-semibold">¡Visita reservada!</p>
+                    <p className="font-semibold">¡Visita agendada!</p>
                     <p className="mt-1">{successMessage}</p>
+                    <p className="mt-3">
+                      La inmobiliaria se estará contactando con vos por teléfono
+                      para confirmar la visita.
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -299,6 +306,7 @@ export function ScheduleVisit({
                     </span>
                     <input
                       name="phone"
+                      required
                       type="tel"
                       placeholder="Ej. 353 563-7888"
                       className="h-11 w-full rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
