@@ -5,6 +5,10 @@ import { projects } from "@/data/properties";
 import { ProjectCard } from "@/components/ProjectCard";
 
 export function Developments() {
+  const visibleProjects = projects.filter(
+    (project) => project.status !== "En pozo"
+  );
+
   return (
     <section id="emprendimientos" className="bg-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -22,7 +26,7 @@ export function Developments() {
               Emprendimientos & Desarrollos
             </p>
             <h2 className="mt-2 max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Invertí en pozo, loteos y desarrollos de la región
+              Invertí en loteos y desarrollos de la región
             </h2>
             <p className="mt-3 max-w-lg text-base text-slate-200">
               Acompañamos tu inversión desde la reserva hasta la escritura, con
@@ -31,11 +35,19 @@ export function Developments() {
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
+        {visibleProjects.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-surface px-6 py-14 text-center">
+            <p className="text-base font-semibold text-navy">
+              Por el momento no hay emprendimientos publicados
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {visibleProjects.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
