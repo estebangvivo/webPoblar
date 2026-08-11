@@ -1,5 +1,4 @@
 import type { Property, PropertyTag, PropertyType } from "@/data/properties";
-import { mockProperties } from "@/data/properties";
 
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80";
@@ -101,7 +100,8 @@ export function mapSimpleInmoProperty(raw: SimpleInmoProperty): Property {
     image: raw.coverImage || images[0] || DEFAULT_IMAGE,
     images,
     featured: true,
-    description: raw.description?.trim() || "Consultá más detalles con nuestro equipo.",
+    description:
+      raw.description?.trim() || "Consultá más detalles con nuestro equipo.",
   };
 }
 
@@ -120,21 +120,20 @@ async function fetchJson<T>(path: string): Promise<T | null> {
 
 export async function getCatalogProperties(): Promise<{
   properties: Property[];
-  source: "simpleinmo" | "mock";
+  source: "simpleinmo" | "error";
 }> {
   const data = await fetchJson<CatalogResponse>(
     `/api/public/i/${SIMPLEINMO_ORG_SLUG}/propiedades`
   );
 
-  if (data?.properties?.length) {
-    return {
-      properties: data.properties.map(mapSimpleInmoProperty),
-      source: "simpleinmo",
-    };
+  if (!data) {
+    return { properties: [], source: "error" };
   }
 
-  // Si la API aún no está deployada o no hay publicadas, usamos mock.
-  return { properties: mockProperties, source: "mock" };
+  return {
+    properties: data.properties.map(mapSimpleInmoProperty),
+    source: "simpleinmo",
+  };
 }
 
 export async function getPropertyBySlug(
@@ -144,9 +143,6 @@ export async function getPropertyBySlug(
     `/api/public/i/${SIMPLEINMO_ORG_SLUG}/propiedades/${encodeURIComponent(slug)}`
   );
 
-  if (data?.property) {
-    return mapSimpleInmoProperty(data.property);
-  }
-
-  return mockProperties.find((p) => p.slug === slug || p.id === slug) ?? null;
+  if (!data?.property) return null;
+  return mapSimpleInmoProperty(data.property);
 }
