@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/PropertyCard";
 import type { Property } from "@/data/properties";
@@ -18,21 +18,14 @@ export function FeaturedProperties({
   properties,
   source,
 }: FeaturedPropertiesProps) {
-  const featured = useMemo(
-    () => properties.filter((p) => p.featured),
-    [properties]
-  );
+  const featured = properties.filter((p) => p.featured);
 
   const [pageSize, setPageSize] = useState<PageSize>(10);
   const [page, setPage] = useState(1);
 
   const totalPages = Math.max(1, Math.ceil(featured.length / pageSize));
-
-  useEffect(() => {
-    setPage((current) => Math.min(current, totalPages));
-  }, [totalPages]);
-
-  const startIndex = (page - 1) * pageSize;
+  const currentPage = Math.min(page, totalPages);
+  const startIndex = (currentPage - 1) * pageSize;
   const pageItems = featured.slice(startIndex, startIndex + pageSize);
   const showingFrom = featured.length === 0 ? 0 : startIndex + 1;
   const showingTo = Math.min(startIndex + pageSize, featured.length);
@@ -155,8 +148,8 @@ export function FeaturedProperties({
                 >
                   <button
                     type="button"
-                    onClick={() => goToPage(page - 1)}
-                    disabled={page <= 1}
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage <= 1}
                     aria-label="Página anterior"
                     className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-navy-soft transition hover:border-brand hover:text-brand-deep disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-navy-soft"
                   >
@@ -169,10 +162,12 @@ export function FeaturedProperties({
                         key={pageNumber}
                         type="button"
                         onClick={() => goToPage(pageNumber)}
-                        aria-current={page === pageNumber ? "page" : undefined}
+                        aria-current={
+                          currentPage === pageNumber ? "page" : undefined
+                        }
                         className={cn(
                           "inline-flex h-10 min-w-10 items-center justify-center rounded-lg px-3 text-sm font-semibold transition",
-                          page === pageNumber
+                          currentPage === pageNumber
                             ? "bg-navy text-white"
                             : "border border-slate-200 bg-white text-navy-soft hover:border-brand hover:text-brand-deep"
                         )}
@@ -184,8 +179,8 @@ export function FeaturedProperties({
 
                   <button
                     type="button"
-                    onClick={() => goToPage(page + 1)}
-                    disabled={page >= totalPages}
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
                     aria-label="Página siguiente"
                     className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-navy-soft transition hover:border-brand hover:text-brand-deep disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-navy-soft"
                   >
