@@ -14,6 +14,48 @@ interface FeaturedPropertiesProps {
 const PAGE_SIZE_OPTIONS = [5, 10, 20] as const;
 type PageSize = (typeof PAGE_SIZE_OPTIONS)[number];
 
+function getVisiblePages(
+  currentPage: number,
+  totalPages: number
+): Array<number | "ellipsis"> {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  const pages = new Set<number>();
+  pages.add(1);
+  pages.add(totalPages);
+  pages.add(currentPage);
+
+  if (currentPage > 1) pages.add(currentPage - 1);
+  if (currentPage < totalPages) pages.add(currentPage + 1);
+
+  if (currentPage <= 3) {
+    pages.add(2);
+    pages.add(3);
+    pages.add(4);
+  }
+
+  if (currentPage >= totalPages - 2) {
+    pages.add(totalPages - 1);
+    pages.add(totalPages - 2);
+    pages.add(totalPages - 3);
+  }
+
+  const sorted = [...pages].sort((a, b) => a - b);
+  const result: Array<number | "ellipsis"> = [];
+
+  for (let i = 0; i < sorted.length; i++) {
+    const pageNumber = sorted[i]!;
+    if (i > 0 && pageNumber - sorted[i - 1]! > 1) {
+      result.push("ellipsis");
+    }
+    result.push(pageNumber);
+  }
+
+  return result;
+}
+
 export function FeaturedProperties({
   properties,
   source,
@@ -143,7 +185,7 @@ export function FeaturedProperties({
 
               {totalPages > 1 ? (
                 <nav
-                  className="flex items-center gap-1"
+                  className="flex flex-wrap items-center justify-center gap-1"
                   aria-label="Paginación de propiedades"
                 >
                   <button
@@ -156,23 +198,31 @@ export function FeaturedProperties({
                     <ChevronLeft className="h-5 w-5" />
                   </button>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (pageNumber) => (
+                  {getVisiblePages(currentPage, totalPages).map((item, index) =>
+                    item === "ellipsis" ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="inline-flex h-10 min-w-8 items-center justify-center px-1 text-sm text-muted"
+                        aria-hidden
+                      >
+                        …
+                      </span>
+                    ) : (
                       <button
-                        key={pageNumber}
+                        key={item}
                         type="button"
-                        onClick={() => goToPage(pageNumber)}
+                        onClick={() => goToPage(item)}
                         aria-current={
-                          currentPage === pageNumber ? "page" : undefined
+                          currentPage === item ? "page" : undefined
                         }
                         className={cn(
                           "inline-flex h-10 min-w-10 items-center justify-center rounded-lg px-3 text-sm font-semibold transition",
-                          currentPage === pageNumber
+                          currentPage === item
                             ? "bg-navy text-white"
                             : "border border-slate-200 bg-white text-navy-soft hover:border-brand hover:text-brand-deep"
                         )}
                       >
-                        {pageNumber}
+                        {item}
                       </button>
                     )
                   )}
