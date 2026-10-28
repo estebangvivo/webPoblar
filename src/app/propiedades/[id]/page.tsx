@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -7,13 +6,15 @@ import {
   Bath,
   BedDouble,
   Car,
+  LayoutGrid,
   MapPin,
   Maximize,
   MessageCircle,
 } from "lucide-react";
+import { PropertyGallery } from "@/components/PropertyGallery";
 import { ScheduleVisit } from "@/components/ScheduleVisit";
 import { getPropertyBySlug } from "@/lib/simpleinmo";
-import { cn, formatPrice, whatsappUrl } from "@/lib/utils";
+import { cn, formatPrice, roomsLabel, usesAmbientesLabel, whatsappUrl } from "@/lib/utils";
 
 const tagStyles = {
   "En Venta": "bg-brand text-white",
@@ -61,24 +62,24 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         </Link>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-navy shadow-lg">
-            <Image
-              src={property.image}
-              alt={property.title}
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
-            <span
-              className={cn(
-                "absolute top-4 left-4 rounded-md px-3 py-1.5 text-xs font-bold tracking-wide",
-                tagStyles[property.tag]
-              )}
-            >
-              {property.tag}
-            </span>
-          </div>
+          <PropertyGallery
+            title={property.title}
+            images={
+              property.images.length > 0
+                ? property.images
+                : [property.image]
+            }
+            tag={
+              <span
+                className={cn(
+                  "absolute top-4 left-4 rounded-md px-3 py-1.5 text-xs font-bold tracking-wide",
+                  tagStyles[property.tag]
+                )}
+              >
+                {property.tag}
+              </span>
+            }
+          />
 
           <div className="flex flex-col">
             <p className="text-sm font-semibold tracking-wide text-brand uppercase">
@@ -140,11 +141,17 @@ export default async function PropertyDetailPage({ params }: PageProps) {
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {property.bedrooms > 0 && (
                 <div className="rounded-xl bg-white p-4 ring-1 ring-slate-200">
-                  <BedDouble className="h-5 w-5 text-brand" />
+                  {usesAmbientesLabel(property.type) ? (
+                    <LayoutGrid className="h-5 w-5 text-brand" />
+                  ) : (
+                    <BedDouble className="h-5 w-5 text-brand" />
+                  )}
                   <p className="mt-2 text-lg font-bold text-navy">
                     {property.bedrooms}
                   </p>
-                  <p className="text-xs text-muted">Dormitorios</p>
+                  <p className="text-xs text-muted">
+                    {roomsLabel(property.type)}
+                  </p>
                 </div>
               )}
               {property.bathrooms > 0 && (

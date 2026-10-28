@@ -31,7 +31,7 @@ type SimpleInmoProperty = {
   areaM2: number | null;
   amenities: string[];
   coverImage: string | null;
-  images: { url: string }[];
+  images: { url: string; isCover?: boolean }[];
 };
 
 type CatalogResponse = {
@@ -100,16 +100,25 @@ function normalizeMediaUrl(url: string | null | undefined): string | null {
 }
 
 export function mapSimpleInmoProperty(raw: SimpleInmoProperty): Property {
-  const normalizedImages = (raw.images ?? [])
+  const sortedRawImages = [...(raw.images ?? [])].sort(
+    (a, b) => Number(Boolean(b.isCover)) - Number(Boolean(a.isCover))
+  );
+
+  const normalizedImages = sortedRawImages
     .map((i) => normalizeMediaUrl(i.url))
     .filter((url): url is string => Boolean(url));
 
-  const cover =
-    normalizeMediaUrl(raw.coverImage) ||
-    normalizedImages[0] ||
-    DEFAULT_IMAGE;
+  const coverFromField = normalizeMediaUrl(raw.coverImage);
+  const uniqueImages = Array.from(
+    new Set(
+      [coverFromField, ...normalizedImages].filter(
+        (url): url is string => Boolean(url)
+      )
+    )
+  );
 
-  const images = normalizedImages.length ? normalizedImages : [cover];
+  const cover = uniqueImages[0] || DEFAULT_IMAGE;
+  const images = uniqueImages.length > 0 ? uniqueImages : [cover];
 
   const isRent = raw.operationType === "RENT";
   const isBoth = raw.operationType === "BOTH";
