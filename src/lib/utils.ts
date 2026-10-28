@@ -1,8 +1,23 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { PropertyType } from "@/data/properties";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+/** Locales, oficinas y cocheras usan “ambientes”; casas/deptos “dormitorios”. */
+export function usesAmbientesLabel(type: PropertyType): boolean {
+  return (
+    type === "Comercial" ||
+    type === "Local" ||
+    type === "Oficina" ||
+    type === "Otro"
+  );
+}
+
+export function roomsLabel(type: PropertyType): string {
+  return usesAmbientesLabel(type) ? "Ambientes" : "Dormitorios";
 }
 
 export function formatPrice(price: number, currency: "ARS" | "USD" = "ARS") {

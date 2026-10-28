@@ -3,9 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Bath, Car, Maximize, MessageCircle, BedDouble } from "lucide-react";
+import {
+  Bath,
+  BedDouble,
+  Car,
+  LayoutGrid,
+  Maximize,
+  MessageCircle,
+} from "lucide-react";
 import type { Property } from "@/data/properties";
-import { cn, formatPrice, whatsappUrl } from "@/lib/utils";
+import { cn, formatPrice, usesAmbientesLabel, whatsappUrl } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: Property;
@@ -94,7 +101,11 @@ export function PropertyCard({ property, index = 0 }: PropertyCardProps) {
         <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-navy-soft">
           {property.bedrooms > 0 && (
             <span className="inline-flex items-center gap-1.5">
-              <BedDouble className="h-4 w-4 text-brand-deep" />
+              {usesAmbientesLabel(property.type) ? (
+                <LayoutGrid className="h-4 w-4 text-brand-deep" />
+              ) : (
+                <BedDouble className="h-4 w-4 text-brand-deep" />
+              )}
               {property.bedrooms}
             </span>
           )}
