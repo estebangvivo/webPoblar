@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BedDouble, Search } from "lucide-react";
 import { locationOptions, propertyTypes } from "@/data/properties";
+import {
+  operationFromTab,
+  parsePropertyFilters,
+  propertyFiltersToSearchParams,
+  tabFromFilters,
+  type PropertyFilters,
+  type PropertySearchTab,
+} from "@/lib/property-filters";
 import { cn } from "@/lib/utils";
 
-type SearchTab = "comprar" | "alquilar" | "emprendimientos";
-
-const tabs: { id: SearchTab; label: string }[] = [
+const tabs: { id: PropertySearchTab; label: string }[] = [
   { id: "comprar", label: "Comprar" },
   { id: "alquilar", label: "Alquilar" },
   { id: "emprendimientos", label: "Emprendimientos" },
@@ -28,9 +35,70 @@ const rentPriceRanges = [
   { value: "1000000+", label: "Más de $1.000.000,00" },
 ];
 
-export function SearchBar() {
-  const [tab, setTab] = useState<SearchTab>("comprar");
-  const priceRanges = tab === "alquilar" ? rentPriceRanges : salePriceRanges;
+type FormState = {
+  tab: PropertySearchTab;
+  type: string;
+  location: string;
+  price: string;
+  bedrooms: string;
+};
+
+function formFromFilters(filters: PropertyFilters): FormState {
+  return {
+    tab: tabFromFilters(filters),
+    type: filters.type,
+    location: filters.location,
+    price: filters.price,
+    bedrooms: filters.bedrooms,
+  };
+}
+
+function SearchBarForm({ initialFilters }: { initialFilters: PropertyFilters }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [form, setForm] = useState<FormState>(() => formFromFilters(initialFilters));
+
+  const priceRanges =
+    form.tab === "alquilar" ? rentPriceRanges : salePriceRanges;
+
+  function updateForm<K extends keyof FormState>(key: K, value: FormState[K]) {
+    setForm((current) => ({
+      ...current,
+      [key]: value,
+      ...(key === "tab" ? { price: "" } : null),
+    }));
+  }
+
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    if (form.tab === "emprendimientos") {
+      document.getElementById("emprendimientos")?.scrollIntoView({
+        behavior: "smooth",
+      });
+      return;
+    }
+
+    const params = propertyFiltersToSearchParams({
+      operation: operationFromTab(form.tab),
+      type: form.type,
+      location: form.location,
+      price: form.price,
+      bedrooms: form.bedrooms,
+    });
+    const query = params.toString();
+    router.push(
+      query ? `${pathname}?${query}#propiedades` : `${pathname}#propiedades`,
+      { scroll: false }
+    );
+
+    requestAnimationFrame(() => {
+      document.getElementById("propiedades")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }
 
   return (
     <div className="w-full overflow-hidden rounded-2xl bg-[#FFF7F0] shadow-2xl shadow-navy/25 ring-1 ring-brand/10">
@@ -39,10 +107,10 @@ export function SearchBar() {
           <button
             key={item.id}
             type="button"
-            onClick={() => setTab(item.id)}
+            onClick={() => updateForm("tab", item.id)}
             className={cn(
               "flex-1 px-3 py-3.5 text-sm font-semibold transition sm:px-4",
-              tab === item.id
+              form.tab === item.id
                 ? "bg-brand text-white"
                 : "bg-[#FFF7F0] text-navy-soft hover:bg-orange-100/70"
             )}
@@ -54,18 +122,15 @@ export function SearchBar() {
 
       <form
         className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4 lg:p-5"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const targetId =
-            tab === "emprendimientos" ? "emprendimientos" : "propiedades";
-          document.getElementById(targetId)?.scrollIntoView({
-            behavior: "smooth",
-          });
-        }}
+        onSubmit={onSubmit}
       >
         <label className="flex flex-col gap-1.5">
           <span className="text-xs font-medium text-muted">Tipo</span>
-          <select className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm text-navy-soft outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+          <select
+            value={form.type}
+            onChange={(e) => updateForm("type", e.target.value)}
+            className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm text-navy-soft outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+          >
             <option value="">Todos</option>
             {propertyTypes.map((type) => (
               <option key={type} value={type}>
@@ -79,7 +144,11 @@ export function SearchBar() {
           <span className="text-xs font-medium text-muted">
             Localidad / Barrio
           </span>
-          <select className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm text-navy-soft outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+          <select
+            value={form.location}
+            onChange={(e) => updateForm("location", e.target.value)}
+            className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm text-navy-soft outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+          >
             <option value="">Todas</option>
             {locationOptions.map((n) => (
               <option key={n} value={n}>
@@ -92,7 +161,9 @@ export function SearchBar() {
         <label className="flex flex-col gap-1.5">
           <span className="text-xs font-medium text-muted">Rango de precio</span>
           <select
-            key={tab}
+            key={form.tab}
+            value={form.price}
+            onChange={(e) => updateForm("price", e.target.value)}
             className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm text-navy-soft outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
           >
             <option value="">Sin límite</option>
@@ -108,7 +179,11 @@ export function SearchBar() {
           <span className="text-xs font-medium text-muted">Dormitorios</span>
           <div className="relative">
             <BedDouble className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted" />
-            <select className="h-11 w-full rounded-lg border border-slate-200 bg-white py-2 pr-3 pl-9 text-sm text-navy-soft outline-none focus:border-brand focus:ring-2 focus:ring-brand/20">
+            <select
+              value={form.bedrooms}
+              onChange={(e) => updateForm("bedrooms", e.target.value)}
+              className="h-11 w-full rounded-lg border border-slate-200 bg-white py-2 pr-3 pl-9 text-sm text-navy-soft outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+            >
               <option value="">Indistinto</option>
               <option value="1">1+</option>
               <option value="2">2+</option>
@@ -127,5 +202,17 @@ export function SearchBar() {
         </button>
       </form>
     </div>
+  );
+}
+
+export function SearchBar() {
+  const searchParams = useSearchParams();
+  const initialFilters = parsePropertyFilters(searchParams);
+
+  return (
+    <SearchBarForm
+      key={searchParams.toString()}
+      initialFilters={initialFilters}
+    />
   );
 }

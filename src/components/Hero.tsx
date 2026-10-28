@@ -1,5 +1,12 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import { SearchBar } from "@/components/SearchBar";
+
+function SearchBarFallback() {
+  return (
+    <div className="h-[180px] w-full animate-pulse rounded-2xl bg-[#FFF7F0]/80" />
+  );
+}
 
 export function Hero() {
   return (
@@ -35,7 +42,9 @@ export function Hero() {
         </div>
 
         <div className="mt-8 w-full max-w-5xl animate-fade-up [animation-delay:120ms] lg:mt-10">
-          <SearchBar />
+          <Suspense fallback={<SearchBarFallback />}>
+            <SearchBar />
+          </Suspense>
         </div>
       </div>
     </section>
