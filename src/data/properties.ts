@@ -269,4 +269,6 @@ export const propertyTypes: PropertyType[] = [
   "Departamento",
   "Terreno",
   "Local",
+  "Comercial",
+  "Oficina",
 ];

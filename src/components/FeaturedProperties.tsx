@@ -1,9 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/PropertyCard";
 import type { Property } from "@/data/properties";
+import {
+  describePropertyFilters,
+  filterProperties,
+  hasActivePropertyFilters,
+  parsePropertyFilters,
+} from "@/lib/property-filters";
 import { cn } from "@/lib/utils";
 
 interface FeaturedPropertiesProps {
@@ -60,13 +67,33 @@ export function FeaturedProperties({
   properties,
   source,
 }: FeaturedPropertiesProps) {
-  const featured = properties.filter((p) => p.featured);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const filters = parsePropertyFilters(searchParams);
+  const featured = filterProperties(
+    properties.filter((p) => p.featured),
+    filters
+  );
+  const filtersActive = hasActivePropertyFilters(filters);
+  const filterSummary = describePropertyFilters(filters);
+  const filterKey = [
+    filters.operation ?? "",
+    filters.type,
+    filters.location,
+    filters.price,
+    filters.bedrooms,
+  ].join("|");
 
   const [pageSize, setPageSize] = useState<PageSize>(10);
-  const [page, setPage] = useState(1);
+  const [pageState, setPageState] = useState({ key: filterKey, page: 1 });
+  const page = pageState.key === filterKey ? pageState.page : 1;
 
   const totalPages = Math.max(1, Math.ceil(featured.length / pageSize));
   const currentPage = Math.min(page, totalPages);
+
+  function setPage(nextPage: number) {
+    setPageState({ key: filterKey, page: nextPage });
+  }
   const startIndex = (currentPage - 1) * pageSize;
   const pageItems = featured.slice(startIndex, startIndex + pageSize);
   const showingFrom = featured.length === 0 ? 0 : startIndex + 1;
@@ -74,7 +101,7 @@ export function FeaturedProperties({
 
   function changePageSize(size: PageSize) {
     setPageSize(size);
-    setPage(1);
+    setPageState({ key: filterKey, page: 1 });
   }
 
   function goToPage(nextPage: number) {
@@ -83,6 +110,16 @@ export function FeaturedProperties({
     document.getElementById("propiedades")?.scrollIntoView({
       behavior: "smooth",
       block: "start",
+    });
+  }
+
+  function clearFilters() {
+    router.push("/#propiedades", { scroll: false });
+    requestAnimationFrame(() => {
+      document.getElementById("propiedades")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     });
   }
 
@@ -110,6 +147,20 @@ export function FeaturedProperties({
                 No pudimos sincronizar el catálogo en este momento.
               </p>
             )}
+            {filtersActive ? (
+              <p className="mt-3 text-sm text-navy-soft">
+                Filtro activo:{" "}
+                <span className="font-semibold">{filterSummary}</span>
+                {" · "}
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="font-semibold text-brand hover:underline"
+                >
+                  Limpiar
+                </button>
+              </p>
+            ) : null}
           </div>
 
           {featured.length > 0 ? (
@@ -141,7 +192,7 @@ export function FeaturedProperties({
           ) : null}
         </div>
 
-        {featured.length === 0 ? (
+        {properties.filter((p) => p.featured).length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
             <p className="text-base font-semibold text-navy">
               Todavía no hay propiedades publicadas
@@ -158,6 +209,22 @@ export function FeaturedProperties({
             >
               Ir a SimpleInmo
             </a>
+          </div>
+        ) : featured.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
+            <p className="text-base font-semibold text-navy">
+              No hay resultados con esos filtros
+            </p>
+            <p className="mt-2 text-sm text-muted">
+              Probá cambiando el tipo, la operación o el rango de precio.
+            </p>
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
+            >
+              Ver todas las propiedades
+            </button>
           </div>
         ) : (
           <>
