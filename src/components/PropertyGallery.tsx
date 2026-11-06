@@ -27,15 +27,16 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-navy shadow-lg">
+      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-navy shadow-lg sm:aspect-[4/3]">
         <Image
           key={activeImage}
           src={activeImage}
           alt={`${title} — foto ${activeIndex + 1}`}
           fill
           priority
-          className="object-cover"
-          sizes="(max-width: 1024px) 100vw, 50vw"
+          quality={90}
+          className="object-contain"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 640px"
         />
 
         {tag}
@@ -46,7 +47,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
               type="button"
               onClick={() => goTo(activeIndex - 1)}
               aria-label="Foto anterior"
-              className="absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy/70 text-white backdrop-blur-sm transition hover:bg-navy"
+              className="absolute top-1/2 left-3 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy/70 text-white backdrop-blur-sm transition hover:bg-navy"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -54,11 +55,11 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
               type="button"
               onClick={() => goTo(activeIndex + 1)}
               aria-label="Foto siguiente"
-              className="absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy/70 text-white backdrop-blur-sm transition hover:bg-navy"
+              className="absolute top-1/2 right-3 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy/70 text-white backdrop-blur-sm transition hover:bg-navy"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
-            <span className="absolute right-3 bottom-3 rounded-md bg-navy/80 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+            <span className="absolute right-3 bottom-3 z-10 rounded-md bg-navy/80 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
               {activeIndex + 1} / {gallery.length}
             </span>
           </>
@@ -75,7 +76,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
               aria-label={`Ver foto ${index + 1}`}
               aria-current={index === activeIndex ? "true" : undefined}
               className={cn(
-                "relative h-16 w-20 shrink-0 overflow-hidden rounded-lg ring-2 transition sm:h-20 sm:w-24",
+                "relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-navy ring-2 transition sm:h-20 sm:w-20",
                 index === activeIndex
                   ? "ring-brand"
                   : "ring-transparent opacity-80 hover:opacity-100"
@@ -85,8 +86,9 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
                 src={src}
                 alt=""
                 fill
+                quality={75}
                 className="object-cover"
-                sizes="96px"
+                sizes="80px"
               />
             </button>
           ))}
