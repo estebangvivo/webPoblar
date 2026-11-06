@@ -27,7 +27,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
 
   return (
     <div className="space-y-3">
-      <div className="relative h-[min(42svh,300px)] w-full overflow-hidden rounded-2xl bg-navy shadow-lg sm:h-auto sm:aspect-[4/3] sm:max-h-none">
+      <div className="relative h-[min(48svh,380px)] w-full overflow-hidden rounded-2xl bg-navy shadow-lg sm:aspect-[4/3] sm:h-auto">
         <Image
           key={activeImage}
           src={activeImage}
@@ -35,7 +35,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
           fill
           priority
           quality={90}
-          className="object-contain"
+          className="object-cover object-center"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 640px"
         />
 
@@ -87,7 +87,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
                 alt=""
                 fill
                 quality={75}
-                className="object-cover"
+                className="object-cover object-center"
                 sizes="80px"
               />
             </button>
