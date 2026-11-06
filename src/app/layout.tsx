@@ -41,9 +41,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${jakarta.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col font-sans">
+      <body className="flex min-h-full max-w-full flex-col overflow-x-hidden font-sans">
         <Navbar />
-        <main className="flex-1">{children}</main>
+        <main className="min-w-0 flex-1">{children}</main>
         <Footer />
         <WhatsAppFloat />
       </body>
