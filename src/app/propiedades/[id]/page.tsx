@@ -62,26 +62,28 @@ export default async function PropertyDetailPage({ params }: PageProps) {
         </Link>
 
         <div className="mt-4 grid gap-6 lg:mt-6 lg:grid-cols-2 lg:gap-12">
-          <PropertyGallery
-            title={property.title}
-            images={
-              property.images.length > 0
-                ? property.images
-                : [property.image]
-            }
-            tag={
-              <span
-                className={cn(
-                  "absolute top-4 left-4 rounded-md px-3 py-1.5 text-xs font-bold tracking-wide",
-                  tagStyles[property.tag]
-                )}
-              >
-                {property.tag}
-              </span>
-            }
-          />
+          <div className="min-w-0">
+            <PropertyGallery
+              title={property.title}
+              images={
+                property.images.length > 0
+                  ? property.images
+                  : [property.image]
+              }
+              tag={
+                <span
+                  className={cn(
+                    "absolute top-4 left-4 rounded-md px-3 py-1.5 text-xs font-bold tracking-wide",
+                    tagStyles[property.tag]
+                  )}
+                >
+                  {property.tag}
+                </span>
+              }
+            />
+          </div>
 
-          <div className="flex flex-col">
+          <div className="flex min-w-0 flex-col">
             <p className="text-sm font-semibold tracking-wide text-brand uppercase">
               {property.type} ·{" "}
               {property.operation === "venta"

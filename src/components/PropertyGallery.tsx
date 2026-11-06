@@ -26,7 +26,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
   if (!activeImage) return null;
 
   return (
-    <div className="space-y-3">
+    <div className="w-full min-w-0 max-w-full space-y-3">
       <div className="relative h-[min(48svh,380px)] w-full overflow-hidden rounded-2xl bg-navy shadow-lg sm:aspect-[4/3] sm:h-auto">
         <Image
           key={activeImage}
@@ -67,7 +67,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
       </div>
 
       {hasMultiple ? (
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="flex max-w-full gap-2 overflow-x-auto overscroll-x-contain pb-1">
           {gallery.map((src, index) => (
             <button
               key={`${src}-${index}`}
