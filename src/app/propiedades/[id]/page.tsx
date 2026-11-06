@@ -51,7 +51,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
   const message = `Hola Poblar! Me interesa: ${property.title} (${property.address}, ${property.neighborhood}). ¿Me pueden dar más info?`;
 
   return (
-    <section className="bg-surface pt-24 pb-16 sm:pt-28 sm:pb-20">
+    <section className="bg-surface pt-20 pb-12 sm:pt-28 sm:pb-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Link
           href="/#propiedades"
@@ -61,7 +61,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
           Volver a propiedades
         </Link>
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="mt-4 grid gap-6 lg:mt-6 lg:grid-cols-2 lg:gap-12">
           <PropertyGallery
             title={property.title}
             images={
@@ -90,11 +90,11 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                   ? "Alquiler"
                   : "Venta y Alquiler"}
             </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-navy sm:text-4xl">
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-navy sm:text-4xl">
               {property.title}
             </h1>
 
-            <p className="mt-3 inline-flex items-start gap-2 text-base text-muted">
+            <p className="mt-2 inline-flex items-start gap-2 text-sm text-muted sm:mt-3 sm:text-base">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
               <span>
                 {property.address}
@@ -103,10 +103,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
               </span>
             </p>
 
-            <div className="mt-6 space-y-2">
+            <div className="mt-4 space-y-2 sm:mt-6">
               {(property.operation === "venta" ||
                 property.operation === "ambos") && (
-                <p className="text-3xl font-bold text-navy">
+                <p className="text-2xl font-bold text-navy sm:text-3xl">
                   <span className="mr-2 text-sm font-semibold tracking-wide text-muted uppercase">
                     Venta
                   </span>
@@ -120,8 +120,8 @@ export default async function PropertyDetailPage({ params }: PageProps) {
                     className={cn(
                       "font-bold text-navy",
                       property.operation === "ambos"
-                        ? "text-2xl"
-                        : "text-3xl"
+                        ? "text-xl sm:text-2xl"
+                        : "text-2xl sm:text-3xl"
                     )}
                   >
                     <span className="mr-2 text-sm font-semibold tracking-wide text-muted uppercase">
