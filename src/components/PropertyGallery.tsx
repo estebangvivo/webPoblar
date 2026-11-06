@@ -27,7 +27,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-navy shadow-lg sm:aspect-[4/3]">
+      <div className="relative h-[min(42svh,300px)] w-full overflow-hidden rounded-2xl bg-navy shadow-lg sm:h-auto sm:aspect-[4/3] sm:max-h-none">
         <Image
           key={activeImage}
           src={activeImage}
@@ -76,7 +76,7 @@ export function PropertyGallery({ title, images, tag }: PropertyGalleryProps) {
               aria-label={`Ver foto ${index + 1}`}
               aria-current={index === activeIndex ? "true" : undefined}
               className={cn(
-                "relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-navy ring-2 transition sm:h-20 sm:w-20",
+                "relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-navy ring-2 transition sm:h-20 sm:w-20",
                 index === activeIndex
                   ? "ring-brand"
                   : "ring-transparent opacity-80 hover:opacity-100"
